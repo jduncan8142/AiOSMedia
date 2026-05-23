@@ -123,12 +123,11 @@ Its relationships are few and explicit:
   library with AiOSFSS, but that is the user's filesystem choice, not a
   component dependency.)
 
-AiOSMedia would implement a new parent feature — provisionally **F-MEDIA** — and
-own its own sub-feature tags (provisionally `MD-*`, e.g. MD-ENGINE, MD-VIDEO,
-MD-AUDIO, MD-ONLINE, MD-QUEUE, MD-AGENT, MD-SAFETY). Whether F-MEDIA is minted in
-the parent `FEATURES.md`, and whether the parking-lot "video player" and "audio
-player" items formally merge into it, is a parent-project decision (see Open
-Questions).
+AiOSMedia implements the parent feature **F-MEDIA** (minted in the parent
+`FEATURES.md` on 2026-05-23) and owns its own sub-feature tags (`MD-*`, e.g.
+MD-ENGINE, MD-VIDEO, MD-AUDIO, MD-ONLINE, MD-QUEUE, MD-AGENT, MD-SAFETY). The
+parking-lot "video player" and "audio player" items are consolidated into this
+one component.
 
 ## Architecture
 
@@ -154,7 +153,7 @@ AiOS uses elsewhere (AiOSTerminal's `aiosterm` core, AiOSPac's library core).
 │   queue / playlist model · source resolution · events     │
 ├──────────┬─────────────────────────────┬──────────────────┤
 │ Source providers                        │ Decode engine    │
-│  Local file · YouTube (sanctioned) ·    │ libmpv / GStreamer│
+│  Local file · YouTube (sanctioned) ·    │ libmpv            │
 │  Spotify (SDK) · generic stream         │ + VA-API/VDPAU HW │
 ├──────────┴─────────────────────────────┴──────────────────┤
 │  AiOS services        AiOSVault (tokens) · agent · voice   │
@@ -172,9 +171,9 @@ AiOS uses elsewhere (AiOSTerminal's `aiosterm` core, AiOSPac's library core).
   engine so the engine can be swapped.
 - **Decode engine** — the actual demuxing, codec decoding, and A/V
   synchronization. AiOSMedia does **not** implement these; it embeds a mature
-  engine (proposed: **libmpv**, with GStreamer as the considered alternative —
-  see Key Decisions) and asks it to decode using the GPU (VA-API on the AMD
-  reference hardware) wherever the codec and hardware allow.
+  engine (**libmpv** — decided; see Key Decisions) and asks it to decode using
+  the GPU (VA-API on the AMD reference hardware) wherever the codec and hardware
+  allow.
 - **Source providers** — a trait-based abstraction over where media comes from:
   a local-file provider (the baseline), a sanctioned-YouTube provider, a
   Spotify-SDK provider, and a generic-stream provider. Each provider resolves a
@@ -410,16 +409,16 @@ built — arbitrary web content. The posture:
   out of the question; the value AiOSMedia adds is canvas integration, the agent
   seam, and the source model — all of which are Rust.
 
-- **Decode engine: libmpv (proposed), GStreamer the alternative.** *Proposed,
-  decide in Phase 0.* **libmpv** is a single, batteries-included, embeddable A/V
-  engine with first-class hardware decoding (VA-API), a clean render API
-  (`render` / OpenGL/`libplacebo`) suited to compositing into a GPU surface, and
-  good Rust bindings; it is the lower-integration-effort path to excellent
-  local playback. **GStreamer** is more modular and has richer Rust bindings
-  (`gstreamer-rs`) and a pipeline model that may map better onto a per-source
-  provider architecture and DMA-BUF export, at the cost of more assembly. *Both*
-  ultimately use FFmpeg/libav for the actual codecs. The choice is a Phase-0
-  spike on the reference hardware (decode-to-DMA-BUF, VA-API, A/V sync quality).
+- **Decode engine: libmpv.** *Decided (2026-05-23, per Jason).* **libmpv** is a
+  single, batteries-included, embeddable A/V engine with first-class hardware
+  decoding (VA-API), a clean render API (`render` / OpenGL / `libplacebo`) suited
+  to compositing into a GPU surface, and good Rust bindings — the
+  lower-integration-effort path to excellent local playback. GStreamer was the
+  considered alternative (more modular, richer `gstreamer-rs` bindings, a pipeline
+  model that might map onto per-source providers + DMA-BUF export) but carries
+  more assembly for no decisive benefit here; both ultimately use FFmpeg/libav for
+  the codecs. A Phase-0 spike still *validates* decode-to-DMA-BUF, VA-API, and
+  A/V-sync quality on the reference hardware, but the engine itself is settled.
 
 - **Video render: zero-copy DMA-BUF into the compositor.** *Proposed, depends on
   AiOSCanvas.* The engine decodes into a GPU texture exported as a DMA-BUF that
@@ -546,20 +545,18 @@ M3 (Q4 2028)** — AiOSMedia does not set its own milestones.
 
 Decisions that need Jason's (or the parent project's) input:
 
-1. **F-MEDIA in the parent, and merging the two parking-lot items.** Should
-   AiOSMedia be minted as parent feature **F-MEDIA** (with `MD-*` sub-tags), and
-   should the parking-lot "video player" (#1) and "audio player" (#2) be formally
-   collapsed into this one component? This PR assumes the combined widget per the
-   kickoff brief; the parent catalog should be reconciled.
+1. ~~F-MEDIA in the parent, and merging the two parking-lot items.~~ **RESOLVED
+   (2026-05-23, per Jason):** **F-MEDIA** is minted in the parent `FEATURES.md`,
+   and the parking-lot "video player" + "audio player" items are consolidated
+   into this one component (AiOSMedia).
 2. **Online-playback ambition vs. effort.** Is in-widget YouTube/Spotify playback
    worth building the sandboxed web-content + EME surface it requires — a large
    component and a major attack surface — or is **sanctioned control + local
    files** the right long-term product, with in-widget online playback
    permanently a stretch goal? This is the single biggest scope decision.
-3. **Decode engine: libmpv vs. GStreamer.** Resolved by a Phase-0 spike on the
-   reference hardware, but Jason may have a preference. libmpv = lower effort,
-   excellent local playback; GStreamer = more modular, may fit the per-source and
-   DMA-BUF model better.
+3. ~~Decode engine: libmpv vs. GStreamer.~~ **RESOLVED (2026-05-23): libmpv** —
+   per Jason. A Phase-0 spike still validates VA-API / DMA-BUF / A-V sync on the
+   reference hardware, but the engine is settled (see Key Decisions).
 4. **Spotify scope.** Is **Spotify Connect remote control** (Premium-gated, no
    DRM, OAuth via vault) the right first/only Spotify integration, deferring
    in-widget audio output indefinitely? Connect control is cheap and lawful;
