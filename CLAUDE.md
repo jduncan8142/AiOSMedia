@@ -16,8 +16,17 @@ AiOSMedia is a combined media-player widget for the AiOS canvas, covering both v
 ## Conventions inherited from AiOS
 - Integrates as a canvas widget hosted by AiOSCanvas; the authoritative cross-project planning docs live in the parent AiOS repo.
 - License: Apache-2.0 (AiOS-wide).
-- Language/stack: **TBD at kickoff** (the compositor is Rust; this widget's stack will be decided when work starts).
-- Security posture: external/streamed content is untrusted (AiOS F-PROMPT-SAFETY); design accordingly later.
+- Language/stack: **proposed** — a Rust `aiosmedia-core` library (transport, queue, source resolution, agent seam) with a mature C media engine (libmpv or GStreamer, decided in Phase 0) for decode. Headless core + thin frontends, mirroring AiOSTerminal/AiOSPac. See [PLAN.md](PLAN.md) "Key Decisions".
+- Security posture: external/streamed content (media files, manifests, metadata, any embedded web content) is untrusted data under AiOS **F-PROMPT-SAFETY**; decode engine and parsers run sandboxed.
+- Credentials: any provider token (Spotify OAuth, YouTube Data API key) goes through **AiOSVault**, never stored locally.
+
+## Planning documents
+This repository is **planning-stage**. Read the docs before writing any code:
+- [PLAN.md](PLAN.md) — vision, principles, architecture (headless core + canvas frontend, GPU decode/render via AiOSCanvas), scope and non-scope, key decisions + proposed stack, the **online-content legal/technical reality** (YouTube/Spotify APIs vs embeds, accounts/Premium, DRM/Widevine, codec licensing), local-file playback, agent integration, F-PROMPT-SAFETY security, and open questions.
+- [ROADMAP.md](ROADMAP.md) — phases mapped to AiOS milestones M1/M2/M3: local playback first, sanctioned online *control* next, in-widget online *playback* a stretch goal.
+- `FEATURES.md` (`MD-*` catalog) and `DESIGN.md` — written at Phase 0; not present yet.
+
+The parent **AiOS** repo holds the authoritative cross-project docs (`PLAN.md`, `DECISIONS.md`, `FEATURES.md`, `THREAT_MODEL.md`); read `DECISIONS.md` before reopening any settled AiOS-wide choice.
 
 ## Next steps (when we start)
-- Decide stack + architecture; write PLAN/ROADMAP; scaffold the project; wire it in as an AiOS component.
+- Confirm the PLAN open questions with Jason (esp. online-playback ambition vs. effort, and engine choice); run the Phase-0 engine/render spike; scaffold the Cargo workspace; write FEATURES/DESIGN; wire it in as an AiOS component.
