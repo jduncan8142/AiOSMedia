@@ -331,12 +331,15 @@ path are the entirety of the first usable milestone.
 
 AiOSMedia is mostly user-driven, but the agent is a first-class *client*:
 
-- **Control seam.** A defined control interface — the same architectural shape as
-  AiOSCanvas's and AiOSVault's Unix-socket control planes — lets the agent
-  enqueue media, issue transport commands (play/pause/seek/skip/next/previous),
-  set volume, and query state ("what's playing", queue contents). The agent runs
-  in the parent Python project and reaches AiOSMedia over this seam; it never
-  embeds the player.
+- **Control seam — exposed as MCP tooling (parent F-MCP).** A defined control
+  interface — the same architectural shape as AiOSCanvas's and AiOSVault's
+  Unix-socket control planes — lets the agent enqueue media, issue transport
+  commands (play/pause/seek/skip/next/previous), set volume, and query state
+  ("what's playing", queue contents). Per the AiOS-wide **F-MCP** requirement
+  (parent `DECISIONS.md`, 2026-05-23), this seam is surfaced to the agent as
+  **MCP tooling** and consumed identically by other widgets (e.g. AiOSOrg) — the
+  agent typically mediates. The agent runs in the parent Python project and
+  reaches AiOSMedia over this seam; it never embeds the player.
 - **Voice.** Voice commands ("play the next episode", "skip this track", "pause
   the music", "play my focus playlist") are interpreted by the AiOS voice/agent
   stack and arrive as structured control calls. AiOSMedia owns *playback*, not
@@ -589,3 +592,4 @@ Decisions that need Jason's (or the parent project's) input:
 | 2026-05-22 | Initial AiOSMedia planning document set created (PLAN, ROADMAP) | Repository kickoff; derived from the parent AiOS planning documents and the PARKING_LOT "Planned Applications & Widgets" entries (video + audio players, combined per kickoff brief) |
 | 2026-05-23 | Locked in **libmpv** as the decode engine and minted **F-MEDIA** in the parent (Open Questions #1, #3 resolved) | Plan approved by Jason; engine choice and parent feature tag settled |
 | 2026-05-23 | **Deferred codecs / format policy and online sources** to a later discussion (Key Decisions + Open Questions #2, #4, #5 parked) | Per Jason: keep the engine + architecture decided, but park codec/format and online-source scope until a dedicated discussion |
+| 2026-05-23 | Recorded that the agent control seam is exposed as **MCP tooling** (parent **F-MCP**), consumed by the agent and other widgets (e.g. AiOSOrg) | AiOS-wide requirement — every component/widget exposes MCP tooling for the agent (parent `DECISIONS.md`, 2026-05-23) |
