@@ -26,13 +26,20 @@ a stretch goal** behind a sandboxed web-content + EME surface AiOS does not yet
 have (see PLAN "The online-content reality"). Resist letting the online ambition
 delay a solid local player.
 
+**Deferred (2026-05-23, per Jason):** the **online-source model** and **codec /
+format policy** are parked for a dedicated later discussion. The phases that turn
+on them — P4's online *control* tier, P5's codec-licensing resolution, and the P6
+in-widget-playback stretch — are therefore **provisional**, not committed
+milestone scope, until that discussion happens. Local playback (P0–P3) and voice
+control are unaffected and remain the priority.
+
 ## Milestone overview
 
 | Milestone | Date | Phases | What AiOSMedia delivers |
 |-----------|------|--------|--------------------------|
 | **M1 — Booting prototype** | Q3 2026 | P0 (partial) | Not on the M1 critical path. At most: project scaffold, the engine/render spike, and a standalone local player running on the dev hardware. No canvas integration required for M1. |
-| **M2 — Daily driver** | Q4 2027 | P1–P4 | Local video + audio playing in an AiOSCanvas widget with GPU decode; transport + queue; agent control seam and voice; sanctioned online *control* (Spotify Connect, YouTube search/metadata). |
-| **M3 — Alpha release** | Q4 2028 | P5–P6 | Hardening, performance, accessibility; the codec-licensing posture resolved for the shipped image; *if pursued*, in-widget online playback behind the sandboxed web-content + EME surface. |
+| **M2 — Daily driver** | Q4 2027 | P1–P4 | Local video + audio playing in an AiOSCanvas widget with GPU decode; transport + queue; agent control seam and voice. *(Sanctioned online **control** — Spotify Connect, YouTube search/metadata — is **deferred pending the online-sources discussion**: provisional, not committed M2 scope.)* |
+| **M3 — Alpha release** | Q4 2028 | P5–P6 | Hardening, performance, accessibility. *(Codec/format policy and in-widget online playback are **deferred pending later discussion**: provisional, not committed M3 scope.)* |
 
 ## P0 — Foundations & Spike · *heavy*
 
@@ -122,6 +129,11 @@ hardware, placed and controlled on the canvas by touch.
 
 ## P4 — Sanctioned Online Sources & Voice · *moderate* · **→ M2**
 
+> **Deferred (2026-05-23, per Jason):** the online-source work in this phase (the
+> `MD-ONLINE` control tier below) is parked pending a dedicated online-sources
+> discussion and is provisional. **Voice control is not deferred** and can proceed
+> independently.
+
 **Goal:** the AiOS milestone M2 — the lawful, low-risk online integrations that
 need no DRM, plus voice control.
 
@@ -149,10 +161,14 @@ devices, surfaces YouTube search, and obeys voice transport commands.
 - Accessibility passes (captions, transport reachability by touch/voice);
   validation on physical touch hardware (the dev VMs cannot exercise VA-API or
   smooth video — see PLAN Risks).
-- **Codec-licensing posture resolved** for the shipped AiOS image, coordinated
-  with the parent's Arch→LTS packaging work (PLAN Open Question 5).
+- **Codec / format policy resolved** for the shipped AiOS image, coordinated with
+  the parent's Arch→LTS packaging work (PLAN Open Question 5). **Deferred
+  (2026-05-23, per Jason)** — parked for a dedicated later discussion; provisional.
 
 ## P6 — In-Widget Online Playback · *heavy* · **stretch, post-M3 / if pursued**
+
+> **Deferred (2026-05-23, per Jason):** parked with the broader online-sources
+> discussion; contingent and may never be scheduled.
 
 **Goal:** *only if* PLAN Open Question 2 is answered "yes" — play protected online
 content directly in the widget. This phase is explicitly contingent and may never
@@ -191,3 +207,4 @@ Linux OS. The product is designed to be fully valuable *without* this phase
 | Date | Change | Rationale |
 |------|--------|-----------|
 | 2026-05-22 | Initial roadmap created | Repository kickoff; phases aligned to the parent AiOS milestones M1/M2/M3, with local playback first and online integrations layered behind it |
+| 2026-05-23 | Marked the **online-source tiers (P4 control, P6 stretch) and codec/format policy (P5)** as deferred/provisional | Per Jason: codecs + online sources parked for a dedicated later discussion; local playback and voice unaffected |
