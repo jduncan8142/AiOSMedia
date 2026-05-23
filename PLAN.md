@@ -429,23 +429,29 @@ built — arbitrary web content. The posture:
   software-copying decoded video frames per-frame is the difference between smooth
   and unwatchable; on the AMD reference GPU the right answer is zero-copy.
 
-- **Online sources: sanctioned APIs only, no circumvention.** *Proposed (firm).*
-  YouTube via Data API (metadata) + IFrame (deferred, needs web surface); Spotify
-  via Web API + Connect control first, in-widget output deferred behind
-  Premium+EME. No stream-ripping, no DRM-stripping, no ToS-violating automation.
-  *Rationale:* principle 4; durability and legal posture for a product with
-  corporate ambitions. (Full treatment above.)
+- **Online sources: deferred to a later discussion.** *Deferred (2026-05-23, per
+  Jason).* The online-source model as a whole — provider playback and control —
+  is parked until a dedicated discussion; it is **not** near-term scope. The
+  standing guardrail for when it *is* taken up: sanctioned APIs only — YouTube via
+  Data API (metadata) + IFrame (needs a web surface); Spotify via Web API +
+  Connect control first, in-widget output behind Premium+EME; no stream-ripping,
+  no DRM-stripping, no ToS-violating automation. *Rationale:* principle 4 and a
+  clean legal posture remain non-negotiable, but the scope and sequencing are a
+  later call, not settled here. (Full background above.)
 
 - **No DRM/CDM shipped.** *Proposed (firm for the planning horizon).* AiOSMedia
   embeds no Widevine/CDM. Protected content is remote-controlled (Spotify
   Connect) or out of scope. *Rationale:* Widevine is proprietary, licensed, not
   freely redistributable, and AiOS has no such relationship.
 
-- **Codecs: prefer royalty-free; defer the distribution licensing call to M3.**
-  *Proposed.* Use the engine's system FFmpeg with GPU decode; prefer AV1/VP9/Opus/
-  FLAC; flag H.264/H.265/AAC licensing as an M3-era packaging decision, not a
-  research-phase blocker. *Rationale:* don't pay (or stall) for a licensing
-  decision that only bites at distribution time, but don't let it be a surprise.
+- **Codecs / format policy: deferred to a later discussion.** *Deferred
+  (2026-05-23, per Jason).* Which codecs ship, the hardware-decode paths, and the
+  H.264/H.265/AAC patent-licensing posture are all parked for a dedicated
+  discussion rather than settled here. Current leaning (not a commitment): the
+  engine's system FFmpeg with GPU decode, preferring royalty-free AV1/VP9/Opus/
+  FLAC, with the H.264/H.265/AAC licensing call surfaced no later than the M3
+  packaging work. *Rationale:* it's a real distribution-time cost that should be
+  owned, but the decision does not need to be made now.
 
 - **Layout: cargo workspace (core lib + frontends).** *Proposed.* An
   `aiosmedia-core` library plus an `aiosmedia` binary/frontends, mirroring
@@ -549,21 +555,25 @@ Decisions that need Jason's (or the parent project's) input:
    (2026-05-23, per Jason):** **F-MEDIA** is minted in the parent `FEATURES.md`,
    and the parking-lot "video player" + "audio player" items are consolidated
    into this one component (AiOSMedia).
-2. **Online-playback ambition vs. effort.** Is in-widget YouTube/Spotify playback
-   worth building the sandboxed web-content + EME surface it requires — a large
-   component and a major attack surface — or is **sanctioned control + local
-   files** the right long-term product, with in-widget online playback
-   permanently a stretch goal? This is the single biggest scope decision.
+2. **Online-playback ambition vs. effort.** **DEFERRED (2026-05-23, per Jason)** —
+   parked for a later discussion; not being resolved now. Is in-widget
+   YouTube/Spotify playback worth building the sandboxed web-content + EME surface
+   it requires — a large component and a major attack surface — or is **sanctioned
+   control + local files** the right long-term product, with in-widget online
+   playback permanently a stretch goal? This is the single biggest scope decision.
 3. ~~Decode engine: libmpv vs. GStreamer.~~ **RESOLVED (2026-05-23): libmpv** —
    per Jason. A Phase-0 spike still validates VA-API / DMA-BUF / A-V sync on the
    reference hardware, but the engine is settled (see Key Decisions).
-4. **Spotify scope.** Is **Spotify Connect remote control** (Premium-gated, no
-   DRM, OAuth via vault) the right first/only Spotify integration, deferring
+4. **Spotify scope.** **DEFERRED (2026-05-23, per Jason)** — parked with the
+   online-sources discussion. Is **Spotify Connect remote control** (Premium-gated,
+   no DRM, OAuth via vault) the right first/only Spotify integration, deferring
    in-widget audio output indefinitely? Connect control is cheap and lawful;
    in-widget output needs Premium + Widevine.
-5. **Codec-licensing posture for the shipped product.** Which decoders ship in the
-   AiOS LTS image, and who bears the H.264/H.265/AAC licensing? Deferrable to the
-   M3 packaging work, but it is a real cost that should be acknowledged as owned.
+5. **Codec / format policy for the shipped product.** **DEFERRED (2026-05-23, per
+   Jason)** — parked for a later discussion. Which codecs ship in the AiOS LTS
+   image, the hardware-decode paths, and who bears the H.264/H.265/AAC licensing?
+   Deferrable to the M3 packaging work, but it is a real cost that should be
+   acknowledged as owned.
 6. **Standalone-frontend platform.** Should the dev/standalone frontend target
    **Windows** as AiOSTerminal does, or stay Linux-only given the Linux-bound
    decode/VA-API stack makes a Windows port less clearly worthwhile?
@@ -577,3 +587,5 @@ Decisions that need Jason's (or the parent project's) input:
 | Date | Change | Rationale |
 |------|--------|-----------|
 | 2026-05-22 | Initial AiOSMedia planning document set created (PLAN, ROADMAP) | Repository kickoff; derived from the parent AiOS planning documents and the PARKING_LOT "Planned Applications & Widgets" entries (video + audio players, combined per kickoff brief) |
+| 2026-05-23 | Locked in **libmpv** as the decode engine and minted **F-MEDIA** in the parent (Open Questions #1, #3 resolved) | Plan approved by Jason; engine choice and parent feature tag settled |
+| 2026-05-23 | **Deferred codecs / format policy and online sources** to a later discussion (Key Decisions + Open Questions #2, #4, #5 parked) | Per Jason: keep the engine + architecture decided, but park codec/format and online-source scope until a dedicated discussion |
